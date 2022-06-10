@@ -1,10 +1,30 @@
 const positionWarehousesModel = require('../models/positions.model');
+const khoHangModel = require('../models/khoHang.models');
 
 exports.getPositionWarehouses = async (req, res) => {
     const positionWarehousesList = await positionWarehousesModel.find({});
     res.json(positionWarehousesList);
 }
-
+exports.getPositionWarehouse = async (req, res) => {
+    const warehouse = await khoHangModel.findOne({_id: req.params.idWarehouse});
+    for (let i = 0; i < warehouse.floors; i++) {
+        for (let j = 0; j < warehouse.row; j++) {
+            for (let k = 0; k < warehouse.position; k++) {
+                const objpositionWarehouses = new positionWarehousesModel({
+                    idWarehouse: req.params.idWarehouse,
+                    namePosition: `F${i}-R${j}-C${k}`,
+                    status: 'false',
+                });
+                await objpositionWarehouses.save(function (err) {
+                    if (err) {
+                        console.log(err);
+                    }
+                });
+            }
+        }
+    }
+    res.json('Thêm thành công');
+}
 exports.postPositionWarehouses = async (req, res) => {
     console.log(req.body);
     const objpositionWarehouses = new positionWarehousesModel({
@@ -46,12 +66,12 @@ exports.editPositionWarehouses = async (req, res) => {
 }
 
 exports.deletePositionWarehouses = (req, res) => {
-        positionWarehousesModel.deleteMany({idWarehouse: req.params.idWarehouse}, function (err) {
-            if (err) {
-                return res.json({'status': err});
-            } else {
-                console.log('Xóa thành công');
-                return res.json({'status': 'Xóa thành công'});
-            }
-        });
+    positionWarehousesModel.deleteMany({idWarehouse: req.params.idWarehouse}, function (err) {
+        if (err) {
+            return res.json({'status': err});
+        } else {
+            console.log('Xóa thành công');
+            return res.json({'status': 'Xóa thành công'});
+        }
+    });
 }
