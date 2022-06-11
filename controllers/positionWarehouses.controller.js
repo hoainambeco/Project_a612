@@ -6,8 +6,33 @@ exports.getPositionWarehouses = async (req, res) => {
     res.json(positionWarehousesList);
 }
 exports.getPositionWarehouse = async (req, res) => {
+    const listPositions = await positionWarehousesModel.find({idWarehouse: req.params.idWarehouse});
+    res.json(listPositions);
+}
+exports.postPositionWarehouses = async (req, res) => {
+    // console.log(req.body);
+    // const objpositionWarehouses = new positionWarehousesModel({
+    //     idWarehouse: req.body.idWarehouse,
+    //     namePosition: req.body.namePosition,
+    //     status: req.body.status || 'false',
+    // });
+    // console.log(objpositionWarehouses);
+    // if (!objpositionWarehouses.idWarehouse || !objpositionWarehouses.namePosition) {
+    //     res.json({
+    //         'status': 'Vui lòng nhập dữ liệu đầy đủ'
+    //     });
+    // } else {
+    //     await objpositionWarehouses.save(function (err) {
+    //         if (err) {
+    //             console.log(err);
+    //         }
+    //         console.log('Thêm thành công');
+    //         res.json(objpositionWarehouses);
+    //     });
+    // }
     const warehouse = await khoHangModel.findOne({_id: req.params.idWarehouse});
-    if (positionWarehousesModel.find({idWarehouse: req.params.idWarehouse}).length >= 0) {
+    const listPositions = await positionWarehousesModel.find({idWarehouse: req.params.idWarehouse});
+    if (listPositions.length > 0) {
         return res.json({'status': 'Kho hàng đã có vị trí'});
     }
     for (let i = 0; i < warehouse.floors; i++) {
@@ -26,29 +51,7 @@ exports.getPositionWarehouse = async (req, res) => {
             }
         }
     }
-    res.json('Thêm thành công');
-}
-exports.postPositionWarehouses = async (req, res) => {
-    console.log(req.body);
-    const objpositionWarehouses = new positionWarehousesModel({
-        idWarehouse: req.body.idWarehouse,
-        namePosition: req.body.namePosition,
-        status: req.body.status || 'false',
-    });
-    console.log(objpositionWarehouses);
-    if (!objpositionWarehouses.idWarehouse || !objpositionWarehouses.namePosition) {
-        res.json({
-            'status': 'Vui lòng nhập dữ liệu đầy đủ'
-        });
-    } else {
-        await objpositionWarehouses.save(function (err) {
-            if (err) {
-                console.log(err);
-            }
-            console.log('Thêm thành công');
-            res.json(objpositionWarehouses);
-        });
-    }
+    res.json({'status':'Thêm thành công'});
 }
 
 exports.editPositionWarehouses = async (req, res) => {
