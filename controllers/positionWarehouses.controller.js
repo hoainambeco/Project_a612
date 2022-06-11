@@ -7,6 +7,9 @@ exports.getPositionWarehouses = async (req, res) => {
 }
 exports.getPositionWarehouse = async (req, res) => {
     const warehouse = await khoHangModel.findOne({_id: req.params.idWarehouse});
+    if (positionWarehousesModel.find({idWarehouse: req.params.idWarehouse})) {
+        return res.json({'status': 'Kho hàng đã có vị trí'});
+    }
     for (let i = 0; i < warehouse.floors; i++) {
         for (let j = 0; j < warehouse.row; j++) {
             for (let k = 0; k < warehouse.position; k++) {
